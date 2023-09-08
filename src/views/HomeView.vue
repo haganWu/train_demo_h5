@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div class="home-get-contacts" @click="getNativeContacts">获取联系人</div>
+    <div class="home-get-contacts" @click="getNativeContacts">获取联系人1</div>
     <div
       v-for="(subItem, subIndex) in itemDataList" :key="subIndex">
       <ContactInfoItem class="home-contact-item" :contact-info="subItem" />
@@ -10,10 +10,24 @@
 
 <script>
 import ContactInfoItem from '@/components/ContactInfoItem'
+import { appSource } from '@/utils/CommonUtil'
 
 export default {
   name: 'HomeView',
   components: { ContactInfoItem },
+
+  mounted () {
+    /**
+     * 前端无法直接通过 window.webkit.messageHandlers.IOSNativeGetContacts 获取联系人列表
+     * 需定义一个方法，让iOS回调此方法返回联系人列表数据
+     */
+    window.onIOSCallbackForContacts = function (str) {
+      console.log('接收IOS端返回的联系人数据', str)
+      this.itemDataList = JSON.parse(str)
+      console.log('JSON.parse', this.itemDataList)
+      return 'onIOSCallbackForContacts 方法已经调用完成'
+    }
+  },
   data: function () {
     return {
       itemDataList: []
@@ -22,10 +36,16 @@ export default {
   methods: {
     getNativeContacts: function () {
       console.log('getNativeContacts')
-      const result = window.AndroidJSBridge.androidNativeGetContacts('H5-Android-调用')
-      console.log('返回', result)
-      this.itemDataList = JSON.parse(result)
-      console.log('JSON.parse', this.itemDataList)
+      if (appSource() === 'android') {
+        const result = window.AndroidJSBridge.androidNativeGetContacts('H5-Android-调用')
+        console.log('返回', result)
+        this.itemDataList = JSON.parse(result)
+        console.log('JSON.parse', this.itemDataList)
+      } else if (appSource() === 'ios') {
+        window.webkit.messageHandlers.IOSNativeGetContacts.postMessage({
+          msg: 'H5-IOS-调用'
+        })
+      }
     }
   }
 }
