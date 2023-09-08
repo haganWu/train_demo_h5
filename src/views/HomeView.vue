@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div class="home-get-contacts" @click="getNativeContacts">获取联系人1</div>
+    <div class="home-get-contacts" @click="getNativeContacts">获取联系人</div>
     <div
       v-for="(subItem, subIndex) in itemDataList" :key="subIndex">
       <ContactInfoItem class="home-contact-item" :contact-info="subItem" />
@@ -21,10 +21,11 @@ export default {
      * 前端无法直接通过 window.webkit.messageHandlers.IOSNativeGetContacts 获取联系人列表
      * 需定义一个方法，让iOS回调此方法返回联系人列表数据
      */
-    window.onIOSCallbackForContacts = function (str) {
-      console.log('接收IOS端返回的联系人数据', str)
-      this.itemDataList = JSON.parse(str)
-      console.log('JSON.parse', this.itemDataList)
+    const that = this
+    window.onIOSCallbackForContacts = function (contactsList) {
+      console.log('接收IOS端返回的联系人数据', contactsList)
+      that.itemDataList = contactsList
+      console.log('JSON.parse', that.itemDataList)
       return 'onIOSCallbackForContacts 方法已经调用完成'
     }
   },
@@ -56,8 +57,6 @@ export default {
   display: flex;
   flex-direction: column;
   padding-top: 18px;
-  justify-content: center;
-  align-items: center;
 }
 
 .home-get-contacts {
@@ -67,6 +66,7 @@ export default {
   padding-top: 8px;
   padding-bottom: 8px;
   margin-bottom: 12px;
+  align-self: center;
   background-color: #3700b3;
   border-radius: 18px;
 }

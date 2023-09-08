@@ -28,33 +28,36 @@ export default {
 <style scoped>
 
 .contact-info {
-  padding-left: 12px;
-  padding-right: 12px;
-  justify-content: center;
+  width: 100%;
   display: flex;
+  align-items: center;
   flex-direction: row;
+  padding-top: 6px;
+  padding-bottom: 6px;
 }
 
 .contact-info-name {
   color: red;
+  width: 80px;
+  text-align: start;
+  margin-left: 16px;
 }
 
 .contact-info-number {
   color: red;
-  margin-left: 30px;
-  margin-top: 4px;
+  flex-grow: 1;
+  width: 120px;
 }
 
 .contact-info-call {
   color: white;
   width: 50px;
-  text-align: center;
   padding-top: 4px;
   padding-bottom: 4px;
-  margin-bottom: 12px;
   font-size: 12px;
   background-color: green;
   margin-left: 20px;
+  margin-right: 16px;
   border-radius: 18px;
 }
 
