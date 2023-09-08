@@ -25,7 +25,6 @@ export default {
     window.onIOSCallbackForContacts = function (contactsList) {
       console.log('接收IOS端返回的联系人数据', contactsList)
       that.itemDataList = contactsList
-      console.log('JSON.parse', that.itemDataList)
       return 'onIOSCallbackForContacts 方法已经调用完成'
     }
   },

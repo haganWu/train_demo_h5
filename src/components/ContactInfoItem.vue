@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import { appSource } from '@/utils/CommonUtil'
+
 export default {
   name: 'ContactInfoItem',
   props: {
@@ -19,7 +21,13 @@ export default {
   methods: {
     call: function () {
       // 传递电话号码到原生应用实现拨打电话功能
-      window.AndroidJSBridge.androidNativeCallPhone(this.contactInfo.contactNumber)
+      if (appSource() === 'android') {
+        window.AndroidJSBridge.androidNativeCallPhone(this.contactInfo.contactNumber)
+      } else if (appSource() === 'ios') {
+        window.webkit.messageHandlers.IOSNativeCallPhone.postMessage({
+          phone: this.contactInfo.contactNumber
+        })
+      }
     }
   }
 }
